@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="es" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Club Deportivo FC</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    .font-oswald { font-family: 'Oswald', sans-serif; }
+    .font-roboto { font-family: 'Roboto', sans-serif; }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #dc2626;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+    }
+    
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: #dc2626;
+      margin-top: 10px;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .news-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .news-card:nth-child(2) { animation-delay: 0.1s; }
+    .news-card:nth-child(3) { animation-delay: 0.2s; }
+    
+    .player-card {
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .match-card {
+      border-left: 4px solid #e63946;
+    }
+    
+    .tab-active {
+      border-bottom: 3px solid #dc2626;
+      color: #dc2626;
+    }
+    
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    
+    .input-field {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .input-field:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+    }
+
+    .toast {
+      animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full font-roboto bg-gray-900 text-white">
+  <div id="app-wrapper" class="h-full w-full overflow-auto">
+   <!-- Header/Navbar -->
+   <header id="main-header" class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4">
+     <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+       <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+        <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 24 24">
+         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /> <circle cx="12" cy="12" r="3" />
+        </svg>
+       </div>
+       <div>
+        <h1 id="header-club-name" class="font-oswald text-xl font-bold text-white">CLUB DEPORTIVO FC</h1>
+        <p id="header-slogan" class="text-xs text-gray-400">Pasión y Gloria</p>
+       </div>
+      </div><!-- Navigation -->
+      <nav class="hidden md:flex items-center space-x-8">
+       <a href="#inicio" class="nav-link text-white font-medium text-sm uppercase tracking-wide">Inicio</a> <a href="#noticias" class="nav-link text-gray-300 hover:text-white font-medium text-sm uppercase tracking-wide">Noticias</a> <a href="#partidos" class="nav-link text-gray-300 hover:text-white font-medium text-sm uppercase tracking-wide">Partidos</a> <a href="#plantel" class="nav-link text-gray-300 hover:text-white font-medium text-sm uppercase tracking-wide">Plantel</a> <a href="#socios" class="nav-link text-gray-300 hover:text-white font-medium text-sm uppercase tracking-wide">Socios</a>
+      </nav><!-- CTA Button --> <button onclick="openModal('socio')" class="btn-primary px-6 py-2 rounded-full text-white font-bold text-sm uppercase tracking-wide"> Hacete Socio </button>
+     </div>
+    </div>
+   </header><!-- Hero Section -->
+   <section id="inicio" class="hero-gradient relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+     <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\" 60\ height="\&quot;60\&quot;" viewbox="\&quot;0" 0 60 xmlns="\&quot;http://www.w3.org/2000/svg\&quot;%3E%3Cg" fill="\&quot;none\&quot;" fill-rule="\&quot;evenodd\&quot;%3E%3Cg" fill-opacity="\&quot;0.4\&quot;%3E%3Cpath" d="\&quot;M36" 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30v0h-2v4h-4v2h4v4h2v6h4v4h-4zm6 34v-4h4v4h0v2h4v4h2v-4h4v-2h6zm6 4v0h4v4h0v2h4v4h2v6h4v4h6z\ %3e%3c g%3e%3c svg%3e);></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 py-20 relative z-10">
+     <div class="text-center animate-fade-in-up">
+      <h2 id="hero-title" class="font-oswald text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">BIENVENIDOS A<br><span class="text-red-600">DEPORTIVO PIROVANO</span></h2>
+      <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Orgullo rojo y blanco. Una historia de pasión, tradición y gloria en el fútbol argentino.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+       <button onclick="openModal('socio')" class="btn-primary px-8 py-4 rounded-full text-white font-bold uppercase tracking-wide"> ⚽ Asociate Ahora </button> <a href="#partidos" class="border-2 border-white px-8 py-4 rounded-full text-white font-bold uppercase tracking-wide hover:bg-white hover:text-gray-900 transition-all duration-300"> 📅 Ver Partidos </a>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+      <div class="text-center p-6 bg-white/5 rounded-2xl backdrop-blur-sm">
+       <p class="font-oswald text-4xl font-bold text-red-600">15</p>
+       <p class="text-gray-400 mt-2">Campeonatos</p>
+      </div>
+      <div class="text-center p-6 bg-white/5 rounded-2xl backdrop-blur-sm">
+       <p class="font-oswald text-4xl font-bold text-red-600">50K+</p>
+       <p class="text-gray-400 mt-2">Socios</p>
+      </div>
+      <div class="text-center p-6 bg-white/5 rounded-2xl backdrop-blur-sm">
+       <p class="font-oswald text-4xl font-bold text-red-600">100+</p>
+       <p class="text-gray-400 mt-2">Años de Historia</p>
+      </div>
+      <div class="text-center p-6 bg-white/5 rounded-2xl backdrop-blur-sm">
+       <p class="font-oswald text-4xl font-bold text-red-600">30</p>
+       <p class="text-gray-400 mt-2">Jugadores</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Noticias Section -->
+   <section id="noticias" class="bg-gray-800 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+     <h3 class="font-oswald text-3xl font-bold text-white section-title mb-10">ÚLTIMAS NOTICIAS</h3>
+     <div class="grid md:grid-cols-3 gap-8">
+      <!-- Noticia 1 -->
+      <article class="news-card bg-gray-900 rounded-2xl overflow-hidden card-hover">
+       <div class="h-48 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+        <span class="text-6xl">⚽</span>
+       </div>
+       <div class="p-6">
+        <span class="text-red-500 text-sm font-bold uppercase">Fútbol Profesional</span>
+        <h4 class="font-oswald text-xl font-bold text-white mt-2 mb-3">Victoria histórica en el clásico</h4>
+        <p class="text-gray-400 text-sm mb-4">El equipo logró una victoria memorable con un marcador de 3-1 frente al rival de siempre.</p>
+        <div class="flex items-center justify-between">
+         <span class="text-gray-500 text-xs">Hace 2 horas</span> <a href="#" class="text-red-500 font-bold text-sm hover:underline">Leer más →</a>
+        </div>
+       </div>
+      </article><!-- Noticia 2 -->
+      <article class="news-card bg-gray-900 rounded-2xl overflow-hidden card-hover">
+       <div class="h-48 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+        <span class="text-6xl">🏆</span>
+       </div>
+       <div class="p-6">
+        <span class="text-blue-500 text-sm font-bold uppercase">Institucional</span>
+        <h4 class="font-oswald text-xl font-bold text-white mt-2 mb-3">Inauguración del nuevo sector del estadio</h4>
+        <p class="text-gray-400 text-sm mb-4">Las nuevas instalaciones permitirán albergar 10.000 hinchas adicionales.</p>
+        <div class="flex items-center justify-between">
+         <span class="text-gray-500 text-xs">Hace 1 día</span> <a href="#" class="text-red-500 font-bold text-sm hover:underline">Leer más →</a>
+        </div>
+       </div>
+      </article><!-- Noticia 3 -->
+      <article class="news-card bg-gray-900 rounded-2xl overflow-hidden card-hover">
+       <div class="h-48 bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center">
+        <span class="text-6xl">👕</span>
+       </div>
+       <div class="p-6">
+        <span class="text-green-500 text-sm font-bold uppercase">Mercado de Pases</span>
+        <h4 class="font-oswald text-xl font-bold text-white mt-2 mb-3">Nuevo refuerzo para la temporada</h4>
+        <p class="text-gray-400 text-sm mb-4">El mediocampista internacional se suma al plantel para la próxima competencia.</p>
+        <div class="flex items-center justify-between">
+         <span class="text-gray-500 text-xs">Hace 3 días</span> <a href="#" class="text-red-500 font-bold text-sm hover:underline">Leer más →</a>
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </section><!-- Partidos Section -->
+   <section id="partidos" class="bg-gray-900 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+     <h3 class="font-oswald text-3xl font-bold text-white section-title mb-10">PRÓXIMOS PARTIDOS</h3>
+     <div class="space-y-4">
+      <!-- Partido 1 -->
+      <div class="match-card bg-gray-800 rounded-xl p-6 flex flex-wrap items-center justify-between gap-4">
+       <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">DPI</span>
+        </div><span class="font-oswald text-2xl font-bold text-white">VS</span>
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">RIV</span>
+        </div>
+       </div>
+       <div class="text-center">
+        <p class="font-oswald text-xl font-bold text-white">LIGA NACIONAL</p>
+        <p class="text-gray-400">Fecha 15</p>
+       </div>
+       <div class="text-center">
+        <p class="text-red-500 font-bold">Sábado 25 Ene</p>
+        <p class="font-oswald text-2xl font-bold text-white">19:00 HS</p>
+       </div>
+       <div class="text-right">
+        <p class="text-gray-400 text-sm">Estadio Municipal</p><button class="btn-primary px-6 py-2 rounded-full text-white font-bold text-sm mt-2"> 🎫 Comprar </button>
+       </div>
+      </div><!-- Partido 2 -->
+      <div class="match-card bg-gray-800 rounded-xl p-6 flex flex-wrap items-center justify-between gap-4">
+       <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 bg-gradient-to-br from-yellow-600 to-yellow-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">ATL</span>
+        </div><span class="font-oswald text-2xl font-bold text-white">VS</span>
+        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">DPI</span>
+        </div>
+       </div>
+       <div class="text-center">
+        <p class="font-oswald text-xl font-bold text-white">COPA CONTINENTAL</p>
+        <p class="text-gray-400">Octavos de Final</p>
+       </div>
+       <div class="text-center">
+        <p class="text-red-500 font-bold">Miércoles 29 Ene</p>
+        <p class="font-oswald text-2xl font-bold text-white">21:30 HS</p>
+       </div>
+       <div class="text-right">
+        <p class="text-gray-400 text-sm">Estadio Visitante</p><span class="inline-block px-4 py-2 bg-gray-700 rounded-full text-gray-400 text-sm mt-2"> Visitante </span>
+       </div>
+      </div><!-- Partido 3 -->
+      <div class="match-card bg-gray-800 rounded-xl p-6 flex flex-wrap items-center justify-between gap-4">
+       <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">DPI</span>
+        </div><span class="font-oswald text-2xl font-bold text-white">VS</span>
+        <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white">DEP</span>
+        </div>
+       </div>
+       <div class="text-center">
+        <p class="font-oswald text-xl font-bold text-white">LIGA NACIONAL</p>
+        <p class="text-gray-400">Fecha 16</p>
+       </div>
+       <div class="text-center">
+        <p class="text-red-500 font-bold">Domingo 2 Feb</p>
+        <p class="font-oswald text-2xl font-bold text-white">17:00 HS</p>
+       </div>
+       <div class="text-right">
+        <p class="text-gray-400 text-sm">Estadio Municipal</p><button class="btn-primary px-6 py-2 rounded-full text-white font-bold text-sm mt-2"> 🎫 Comprar </button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Plantel Section -->
+   <section id="plantel" class="bg-gray-800 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+     <h3 class="font-oswald text-3xl font-bold text-white section-title mb-10">PLANTEL PROFESIONAL</h3><!-- Tabs -->
+     <div class="flex space-x-6 mb-8 border-b border-gray-700 pb-4">
+      <button onclick="filterPlayers('todos')" class="tab-btn tab-active font-bold uppercase tracking-wide pb-2" data-tab="todos">Todos</button> <button onclick="filterPlayers('arqueros')" class="tab-btn text-gray-400 hover:text-white font-bold uppercase tracking-wide pb-2" data-tab="arqueros">Arqueros</button> <button onclick="filterPlayers('defensores')" class="tab-btn text-gray-400 hover:text-white font-bold uppercase tracking-wide pb-2" data-tab="defensores">Defensores</button> <button onclick="filterPlayers('mediocampistas')" class="tab-btn text-gray-400 hover:text-white font-bold uppercase tracking-wide pb-2" data-tab="mediocampistas">Mediocampistas</button> <button onclick="filterPlayers('delanteros')" class="tab-btn text-gray-400 hover:text-white font-bold uppercase tracking-wide pb-2" data-tab="delanteros">Delanteros</button>
+     </div>
+     <div id="players-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <!-- Players will be rendered here -->
+     </div>
+    </div>
+   </section><!-- Socios Section -->
+   <section id="socios" class="bg-gray-900 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+     <h3 class="font-oswald text-3xl font-bold text-white section-title mb-10">ÁREA DE SOCIOS</h3>
+     <div class="grid md:grid-cols-2 gap-8">
+      <!-- Beneficios -->
+      <div class="bg-gray-800 rounded-2xl p-8">
+       <h4 class="font-oswald text-2xl font-bold text-white mb-6">Beneficios de ser Socio</h4>
+       <ul class="space-y-4">
+        <li class="flex items-start space-x-3"><span class="text-red-600 text-xl">✓</span>
+         <div>
+          <p class="text-white font-bold">Acceso prioritario a entradas</p>
+          <p class="text-gray-400 text-sm">Compra anticipada para todos los partidos</p>
+         </div></li>
+        <li class="flex items-start space-x-3"><span class="text-red-600 text-xl">✓</span>
+         <div>
+          <p class="text-white font-bold">Descuentos exclusivos</p>
+          <p class="text-gray-400 text-sm">En tienda oficial y merchandising</p>
+         </div></li>
+        <li class="flex items-start space-x-3"><span class="text-red-600 text-xl">✓</span>
+         <div>
+          <p class="text-white font-bold">Acceso a instalaciones</p>
+          <p class="text-gray-400 text-sm">Gimnasio, pileta y canchas</p>
+         </div></li>
+        <li class="flex items-start space-x-3"><span class="text-red-600 text-xl">✓</span>
+         <div>
+          <p class="text-white font-bold">Eventos exclusivos</p>
+          <p class="text-gray-400 text-sm">Encuentros con jugadores y leyendas</p>
+         </div></li>
+       </ul><button onclick="openModal('socio')" class="btn-primary w-full py-4 rounded-full text-white font-bold uppercase tracking-wide mt-8"> ⚽ Quiero ser Socio </button>
+      </div><!-- Lista de socios registrados -->
+      <div class="bg-gray-800 rounded-2xl p-8">
+       <div class="flex items-center justify-between mb-6">
+        <h4 class="font-oswald text-2xl font-bold text-white">Socios Registrados</h4><span id="socios-count" class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">0</span>
+       </div>
+       <div id="socios-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+        <p class="text-gray-400 text-center py-8">No hay socios registrados aún</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="bg-gray-950 border-t border-gray-800 py-12">
+    <div class="max-w-7xl mx-auto px-4">
+     <div class="grid md:grid-cols-4 gap-8">
+      <div>
+       <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+         <span class="font-oswald font-bold text-white text-sm">DPI</span>
+        </div><span id="footer-club-name" class="font-oswald font-bold text-white">DEPORTIVO PIROVANO</span>
+       </div>
+       <p class="text-gray-400 text-sm">Más de 100 años haciendo historia en el fútbol nacional e internacional.</p>
+      </div>
+      <div>
+       <h5 class="font-oswald font-bold text-white mb-4">ENLACES</h5>
+       <ul class="space-y-2 text-gray-400 text-sm">
+        <li><a href="#noticias" class="hover:text-red-500 transition-colors">Noticias</a></li>
+        <li><a href="#partidos" class="hover:text-red-500 transition-colors">Calendario</a></li>
+        <li><a href="#plantel" class="hover:text-red-500 transition-colors">Plantel</a></li>
+        <li><a href="#socios" class="hover:text-red-500 transition-colors">Socios</a></li>
+       </ul>
+      </div>
+      <div>
+       <h5 class="font-oswald font-bold text-white mb-4">CONTACTO</h5>
+       <ul class="space-y-2 text-gray-400 text-sm">
+        <li>📍 Av. del Estadio 1234</li>
+        <li>📞 +54 11 1234-5678</li>
+        <li>✉️ info@clubdeportivofc.com</li>
+       </ul>
+      </div>
+      <div>
+       <h5 class="font-oswald font-bold text-white mb-4">REDES SOCIALES</h5>
+       <div class="flex space-x-4">
+        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-all"> <span>📘</span> </a> <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-all"> <span>📸</span> </a> <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-all"> <span>🐦</span> </a> <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-all"> <span>📺</span> </a>
+       </div>
+      </div>
+     </div>
+     <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+      <p class="text-gray-500 text-sm">© 2025 Deportivo Pirovano. Todos los derechos reservados.</p>
+     </div>
+    </div>
+   </footer><!-- Modal de Registro de Socio -->
+   <div id="modal-socio" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-gray-900 rounded-2xl max-w-md w-full p-8 relative">
+     <button onclick="closeModal('socio')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"> ✕ </button>
+     <h3 class="font-oswald text-2xl font-bold text-white mb-6">🎉 Hacete Socio</h3>
+     <form id="form-socio" onsubmit="handleSocioSubmit(event)">
+      <div class="space-y-4">
+       <div>
+        <label class="block text-gray-400 text-sm mb-2" for="socio-nombre">Nombre Completo</label> <input type="text" id="socio-nombre" required class="input-field w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="Tu nombre completo">
+       </div>
+       <div>
+        <label class="block text-gray-400 text-sm mb-2" for="socio-email">Email</label> <input type="email" id="socio-email" required class="input-field w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="tu@email.com">
+       </div>
+       <div>
+        <label class="block text-gray-400 text-sm mb-2" for="socio-telefono">Teléfono</label> <input type="tel" id="socio-telefono" required class="input-field w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="+54 11 1234-5678">
+       </div>
+       <div>
+        <label class="block text-gray-400 text-sm mb-2" for="socio-categoria">Categoría</label> <select id="socio-categoria" required class="input-field w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none"> <option value="">Selecciona una categoría</option> <option value="platea">Platea - $15.000/mes</option> <option value="popular">Popular - $8.000/mes</option> <option value="adherente">Adherente - $5.000/mes</option> </select>
+       </div>
+      </div><button type="submit" id="btn-submit-socio" class="btn-primary w-full py-4 rounded-full text-white font-bold uppercase tracking-wide mt-6"> Registrarme </button>
+     </form>
+    </div>
+   </div><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+  </div>
+  <script>
+    // Players Data
+    const playersData = [
+      { numero: 1, nombre: "Franco Armani", posicion: "Arquero", categoria: "arqueros" },
+      { numero: 12, nombre: "Juan García", posicion: "Arquero", categoria: "arqueros" },
+      { numero: 2, nombre: "Milton Casco", posicion: "Defensor", categoria: "defensores" },
+      { numero: 4, nombre: "Paulo Díaz", posicion: "Defensor", categoria: "defensores" },
+      { numero: 6, nombre: "David Martínez", posicion: "Defensor", categoria: "defensores" },
+      { numero: 3, nombre: "Enzo Pérez", posicion: "Defensor", categoria: "defensores" },
+      { numero: 8, nombre: "Agustín Palavecino", posicion: "Mediocampista", categoria: "mediocampistas" },
+      { numero: 10, nombre: "Juan Quintero", posicion: "Mediocampista", categoria: "mediocampistas" },
+      { numero: 14, nombre: "Nicolás De La Cruz", posicion: "Mediocampista", categoria: "mediocampistas" },
+      { numero: 20, nombre: "Esequiel Barco", posicion: "Mediocampista", categoria: "mediocampistas" },
+      { numero: 9, nombre: "Lucas Beltrán", posicion: "Delantero", categoria: "delanteros" },
+      { numero: 11, nombre: "Pablo Solari", posicion: "Delantero", categoria: "delanteros" },
+      { numero: 7, nombre: "Matías Suárez", posicion: "Delantero", categoria: "delanteros" }
+    ];
+    
+    // Default config
+    const defaultConfig = {
+      club_name: "DEPORTIVO PIROVANO",
+      slogan: "Orgullo Rojo y Blanco",
+      hero_title: "BIENVENIDOS A",
+      background_color: "#0a0a0a",
+      surface_color: "#1a1a1a",
+      text_color: "#ffffff",
+      primary_action: "#dc2626",
+      secondary_action: "#e5e7eb"
+    };
+    
+    let sociosData = [];
+    
+    // Render Players
+    function renderPlayers(filter = 'todos') {
+      const grid = document.getElementById('players-grid');
+      const filteredPlayers = filter === 'todos' 
+        ? playersData 
+        : playersData.filter(p => p.categoria === filter);
+      
+      grid.innerHTML = filteredPlayers.map(player => `
+        <div class="player-card rounded-2xl overflow-hidden card-hover">
+          <div class="h-40 bg-gradient-to-b from-red-600/20 to-transparent flex items-center justify-center">
+            <span class="font-oswald text-6xl font-bold text-white/20">${player.numero}</span>
+          </div>
+          <div class="p-4 text-center">
+            <p class="text-red-500 font-bold text-2xl">${player.numero}</p>
+            <h5 class="font-oswald font-bold text-white mt-1">${player.nombre}</h5>
+            <p class="text-gray-400 text-sm">${player.posicion}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function filterPlayers(categoria) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('text-gray-400');
+      });
+      document.querySelector(`[data-tab="${categoria}"]`).classList.add('tab-active');
+      document.querySelector(`[data-tab="${categoria}"]`).classList.remove('text-gray-400');
+      renderPlayers(categoria);
+    }
+    
+    // Modal Functions
+    function openModal(type) {
+      document.getElementById(`modal-${type}`).classList.remove('hidden');
+    }
+    
+    function closeModal(type) {
+      document.getElementById(`modal-${type}`).classList.add('hidden');
+    }
+    
+    // Toast Function
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+      toast.className = `toast ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg font-medium`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+    
+    // Form Submit Handler
+    async function handleSocioSubmit(event) {
+      event.preventDefault();
+      
+      if (sociosData.length >= 999) {
+        showToast('Se alcanzó el límite máximo de registros', 'error');
+        return;
+      }
+      
+      const btn = document.getElementById('btn-submit-socio');
+      btn.disabled = true;
+      btn.textContent = 'Registrando...';
+      
+      const socioData = {
+        id: Date.now().toString(),
+        tipo: 'socio',
+        nombre: document.getElementById('socio-nombre').value,
+        email: document.getElementById('socio-email').value,
+        telefono: document.getElementById('socio-telefono').value,
+        categoria: document.getElementById('socio-categoria').value,
+        fecha_registro: new Date().toISOString()
+      };
+      
+      try {
+        const result = await window.dataSdk.create(socioData);
+        
+        if (result.isOk) {
+          showToast('¡Bienvenido al club! Te registraste exitosamente');
+          document.getElementById('form-socio').reset();
+          closeModal('socio');
+        } else {
+          showToast('Error al registrar. Intenta nuevamente', 'error');
+        }
+      } catch (error) {
+        showToast('Error al registrar. Intenta nuevamente', 'error');
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Registrarme';
+    }
+    
+    // Render Socios List
+    function renderSociosList(data) {
+      const list = document.getElementById('socios-list');
+      const count = document.getElementById('socios-count');
+      
+      sociosData = data;
+      count.textContent = data.length;
+      
+      if (data.length === 0) {
+        list.innerHTML = '<p class="text-gray-400 text-center py-8">No hay socios registrados aún</p>';
+        return;
+      }
+      
+      const existingIds = new Set([...list.querySelectorAll('[data-socio-id]')].map(el => el.dataset.socioId));
+      const newIds = new Set(data.map(s => s.__backendId || s.id));
+      
+      // Remove deleted items
+      list.querySelectorAll('[data-socio-id]').forEach(el => {
+        if (!newIds.has(el.dataset.socioId)) {
+          el.remove();
+        }
+      });
+      
+      // Update or add items
+      data.forEach((socio, index) => {
+        const socioId = socio.__backendId || socio.id;
+        let element = list.querySelector(`[data-socio-id="${socioId}"]`);
+        
+        const categoriaColors = {
+          platea: 'bg-yellow-600',
+          popular: 'bg-blue-600',
+          adherente: 'bg-green-600'
+        };
+        
+        const fecha = new Date(socio.fecha_registro);
+        const fechaStr = fecha.toLocaleDateString('es-AR');
+        
+        const html = `
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">
+              ${socio.nombre.charAt(0).toUpperCase()}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-medium truncate">${socio.nombre}</p>
+              <p class="text-gray-400 text-xs">${socio.email}</p>
+            </div>
+            <span class="${categoriaColors[socio.categoria] || 'bg-gray-600'} text-white text-xs px-2 py-1 rounded-full capitalize">
+              ${socio.categoria}
+            </span>
+          </div>
+          <p class="text-gray-500 text-xs mt-1 pl-13">Registrado: ${fechaStr}</p>
+        `;
+        
+        if (element) {
+          element.innerHTML = html;
+        } else {
+          element = document.createElement('div');
+          element.className = 'bg-gray-900 rounded-xl p-4';
+          element.dataset.socioId = socioId;
+          element.innerHTML = html;
+          list.appendChild(element);
+        }
+      });
+    }
+    
+    // Data Handler for SDK
+    const dataHandler = {
+      onDataChanged(data) {
+        renderSociosList(data);
+      }
+    };
+    
+    // Apply config to UI
+    function applyConfig(config) {
+      const clubName = config.club_name || defaultConfig.club_name;
+      const slogan = config.slogan || defaultConfig.slogan;
+      const heroTitle = config.hero_title || defaultConfig.hero_title;
+      
+      document.getElementById('header-club-name').textContent = clubName;
+      document.getElementById('header-slogan').textContent = slogan;
+      document.getElementById('footer-club-name').textContent = clubName;
+      
+      const heroTitleEl = document.getElementById('hero-title');
+      heroTitleEl.innerHTML = `${heroTitle}<br><span class="text-red-500">${clubName}</span>`;
+      
+      // Apply colors
+      const bg = config.background_color || defaultConfig.background_color;
+      const surface = config.surface_color || defaultConfig.surface_color;
+      const text = config.text_color || defaultConfig.text_color;
+      const primary = config.primary_action || defaultConfig.primary_action;
+      const secondary = config.secondary_action || defaultConfig.secondary_action;
+      
+      document.body.style.backgroundColor = bg;
+      document.querySelectorAll('.bg-gray-900').forEach(el => el.style.backgroundColor = bg);
+      document.querySelectorAll('.bg-gray-800').forEach(el => el.style.backgroundColor = surface);
+    }
+    
+    // Element SDK Setup
+    const element = {
+      defaultConfig: defaultConfig,
+      
+      onConfigChange: async (config) => {
+        applyConfig(config);
+      },
+      
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.primary_action || defaultConfig.primary_action,
+            set: (value) => { config.primary_action = value; window.elementSdk.setConfig({ primary_action: value }); }
+          },
+          {
+            get: () => config.secondary_action || defaultConfig.secondary_action,
+            set: (value) => { config.secondary_action = value; window.elementSdk.setConfig({ secondary_action: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      
+      mapToEditPanelValues: (config) => new Map([
+        ["club_name", config.club_name || defaultConfig.club_name],
+        ["slogan", config.slogan || defaultConfig.slogan],
+        ["hero_title", config.hero_title || defaultConfig.hero_title]
+      ])
+    };
+    
+    // Initialize
+    async function init() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init(element);
+      }
+      
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+      
+      // Render initial players
+      renderPlayers();
+      
+      // Apply initial config
+      applyConfig(defaultConfig);
+    }
+    
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d28c4bf97271ebd',t:'MTc3MTg3MTE1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
